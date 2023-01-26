@@ -1,13 +1,11 @@
 #!/usr/bin/python3
-"""
-validUTF8(data)
+"""UTF-8 validation module.
 """
 
 
 def validUTF8(data):
-    """
-        - Checks if a list of integers are valid UTF-8 encoding
-        - https://datatracker.ietf.org/doc/html/rfc3629#page-4
+    """Checks if a list of integers are valid UTF-8 codepoints.
+    See <https://datatracker.ietf.org/doc/html/rfc3629#page-4>
     """
     skip = 0
     n = len(data)
@@ -17,14 +15,14 @@ def validUTF8(data):
             continue
         if type(data[i]) != int or data[i] < 0 or data[i] > 0x10ffff:
             return False
-        elif data[i] <= 0x07f:
+        elif data[i] <= 0x7f:
             skip = 0
         elif data[i] & 0b11111000 == 0b11110000:
-            # 4-byte utf-8 encoding
+            # 4-byte utf-8 character encoding
             span = 4
-            if n - 1 >= span:
+            if n - i >= span:
                 next_body = list(map(
-                    lambda x: x & 0b11111000 == 0b11110000,
+                    lambda x: x & 0b11000000 == 0b10000000,
                     data[i + 1: i + span],
                 ))
                 if not all(next_body):
