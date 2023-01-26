@@ -23,8 +23,9 @@ def validUTF8(data):
             # 4-byte utf-8 encoding
             span = 4
             if n - 1 >= span:
-                next_body = list(map(lambda x: x & 0b11111000 == 0b11110000,
-                data[i + 1: i + span],
+                next_body = list(map(
+                    lambda x: x & 0b11111000 == 0b11110000,
+                    data[i + 1: i + span],
                 ))
                 if not all(next_body):
                     return False
@@ -60,5 +61,3 @@ def validUTF8(data):
         else:
             return False
     return True
-
-
