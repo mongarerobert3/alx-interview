@@ -3,23 +3,23 @@
 
 def isWinner(x, nums):
     """Determine if a player wins a game of prime numbers"""
-    if not nums or x < 1:
+    if x < 1 or not nums:
         return None
+    marias_wins, bens_wins = 0, 0
+    # generate primes with a limit of the maximum number in nums
     n = max(nums)
-    primes = [True] * (n + 1)
+    primes = [True for _ in range(1, n + 1, 1)]
     primes[0] = False
-    primes[1] = False
-    for i in range(2, n + 1):
-        if primes[i]:
-            for j in range(i * i, n + 1, i):
-                primes[j] = False
-    prime_nums = [i for i in range(n + 1) if primes[i]]
-    count = 0
-    for num in nums:
-        if num in prime_nums:
-            count += 1
-    if count * 2 == x:
+    for i, is_prime in enumerate(primes, 1):
+        if i == 1 or not is_prime:
+            continue
+        for j in range(i + i, n + 1, i):
+            primes[j - 1] = False
+    # filter the number of primes less than n in nums for each round
+    for _, n in zip(range(x), nums):
+        primes_count = len(list(filter(lambda x: x, primes[0: n])))
+        bens_wins += primes_count % 2 == 0
+        marias_wins += primes_count % 2 == 1
+    if marias_wins == bens_wins:
         return None
-    if count * 2 > x:
-        return "Maria"
-    return "Ben"
+    return 'Maria' if marias_wins > bens_wins else 'Ben'
